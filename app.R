@@ -1,5 +1,8 @@
 library(shiny)
 shinyApp(
+  
+  selectableRegions = letters[1:10]
+  
   ui <- fluidPage(
     
     titlePanel("Test"),
@@ -29,8 +32,17 @@ shinyApp(
   ),
   
   
-  server <- function(input, output){
-  
+  server <- function(input, output,session){
+    observe(
+      {
+        if(input$selectall == 0){
+          
+        }
+        else{
+          
+        }
+      }
+    )
   }
 )
   
