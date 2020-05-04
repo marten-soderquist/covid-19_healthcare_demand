@@ -1,0 +1,22 @@
+CountyCode,CountyName,HealthcareRegionName,ISO_3166_2
+1,Stockholms län,Region Stockholm,SE-AB
+3,Uppsala län,Region Uppsala,SE-C
+4,Södermanlands län,Region Sörmland,SE-D
+5,Östergötlands län,Region Östergötland,SE-E
+6,Jönköpings län,Region Jönköpings län,SE-F
+7,Kronobergs län,Region Kronoberg,SE-G
+8,Kalmar län,Region Kalmar län,SE-H
+9,Gotlands län,Region Gotland,SE-I
+10,Blekinge län,Region Blekinge,SE-K
+12,Skåne län,Region Skåne,SE-M
+13,Hallands län,Region Halland,SE-N
+14,Västra Götalands län,Västra Götalandsregionen,SE-O
+17,Värmlands län,Region Värmland,SE-S
+18,Örebro län,Region Örebro län,SE-T
+19,Västmanlands län,Region Västmanland,SE-U
+20,Dalarnas län,Region Dalarna,SE-W
+21,Gävleborgs län,Region Gävleborg,SE-X
+22,Västernorrlands län,Region Västernorrland,SE-Y
+23,Jämtlands län,Region Jämtland Härjedalen,SE-Z
+24,Västerbottens län,Region Västerbotten,SE-AC
+25,Norrbottens län,Region Norrbotten,SE-BD

@@ -1,0 +1,37 @@
+library(shiny)
+shinyApp(
+  ui <- fluidPage(
+    
+    titlePanel("Test"),
+    
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("region","Region",
+                  c("Sverige","Region stockholm","region Västerbotten")
+                  ),
+        selectInput("scenario","Scenario",
+                    c("1","2","3","4","5")
+                    ),
+        checkboxGroupInput("variable", "Variables to show:",
+                           c("Sjuka","IVA","Döda")
+                  ),
+        actionLink("selectall", "Select All")
+        ),
+      
+      mainPanel(
+      
+      # Output: Histogram ----
+      #plotOutput(outputId = "distPlot")
+      h3("Graf över resultat")
+      
+      )
+    )
+  ),
+  
+  
+  server <- function(input, output){
+  
+  }
+)
+  
+shinyApp(ui,server)
