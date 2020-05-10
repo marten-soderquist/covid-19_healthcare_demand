@@ -15,6 +15,9 @@ ages = vroom::vroom("data/metadata/agegroups.csv",
 ### create one file per municipality to reduce memory use or per parameter
 ### combination?
 
+textSize = 18
+lineWidth = 1
+
 columnTypes = list(
   MunicipalityCode = "c",
   AgeGroup = "c",
@@ -39,38 +42,38 @@ dataSets = list(
 )
 
 
-shinyApp(ui <- fluidPage(titlePanel("Title"),
-                         
-                         sidebarLayout(
-                           sidebarPanel(
-                             selectInput("regionSelect", "Område",
-                                         character(0)),
-                             inputPanel(
-                               textOutput(outputId = "contactPanelId"),
-                               selectInput(
-                                 "scenarioSelect",
-                                 "Scenario",
-                                 choices = c(
-                                   "Scenario 1" = 1,
-                                   "Scenario 2" = 2,
-                                   "Scenario 3" = 3,
-                                   "Scenario 4" = 4,
-                                   "Scenario 5" = 5
-                                 )
-                               )
-                             ),
-                           ),
-                           
-                           mainPanel(
-                             textOutput(outputId = "t1"),
-                             # tableOutput("tableOutputId"),
-                             plotOutput("plotDeathsId"),
-                             plotOutput("plotIVAId"),
-                             plotOutput("plotContagiusId"),
-                             plotOutput("plotCareloadId"),
-                             plotOutput("plotContagiousTotalId")
+shinyApp(ui <- fluidPage(#titlePanel("Title"),
+                         fluidRow(
+                           column(2, selectInput("regionSelect", "",
+                                                 character(0))),
+                           column(10, selectInput(
+                             "scenarioSelect",
+                             "",
+                             choices = c(
+                               "Scenario 1" = 1,
+                               "Scenario 2" = 2,
+                               "Scenario 3" = 3,
+                               "Scenario 4" = 4,
+                               "Scenario 5" = 5
+                             )
                            )
-                         )),
+                           )
+                         ),
+                         
+                         fluidRow(
+                            
+                           column(6, plotOutput("plotIVAId")
+                           ),
+                           column(6, plotOutput("plotCareloadId")
+                           )
+                         ),
+                         fluidRow(
+                           column(4, plotOutput("plotDeathsId")
+                           ),
+                           column(4, plotOutput("plotContagiusId")),
+                           column(4, plotOutput("plotContagiousTotalId"))
+                         )
+                         ),
          
          
          server <- function(input, output, session) {
@@ -97,61 +100,64 @@ shinyApp(ui <- fluidPage(titlePanel("Title"),
                )
            })
            
+           commonTheme = theme( text = element_text(size=textSize),
+                                legend.position = 'bottom')
+           
            # output$tableOutputId <- renderTable({plotData()})
            output$plotDeathsId <- renderPlot({
-             ggplot(plotData(), aes(x = Date, y = deaths)) + geom_line(aes(color = Age)) + stat_summary(fun = sum, geom =
-                                                                                                          'line', aes(color="Total")) +
+             ggplot(plotData(), aes(x = Date, y = deaths)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(fun = sum, geom =
+                                                                                                          'line', size = lineWidth, aes(color="Total")) +
                labs(
                  title = paste("Cumulative deaths in",input$regionSelect),
-                 x = "Date",
-                 y = "Number",
+                 x = element_blank(),
+                 y = element_blank(),
                  color = "Agegroups"
-               )
+               ) + commonTheme
            })
 
            output$plotIVAId <-
              renderPlot({
-               ggplot(plotData(), aes(x = Date, y = intensiveCare)) + geom_line(aes(color = Age)) + stat_summary(fun = sum, geom =
-                                                                                                            'line', aes(color="Total")) +
+               ggplot(plotData(), aes(x = Date, y = intensiveCare)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(fun = sum, geom =
+                                                                                                            'line', size = lineWidth, aes(color="Total")) +
                  labs(
-                   title = paste("Persons under intensive care in", input$regionSelect),
-                   x = "Date",
-                   y = "Number",
+                   title = paste("Patients in intensive care in", input$regionSelect),
+                   x = element_blank(),
+                   y = element_blank(),
                    color = "Agegroups"
-                 )
+                 ) + commonTheme
              })
            output$plotContagiusId <-
              renderPlot({
-               ggplot(plotData(), aes(x = Date, y = contagiousInSociety)) + geom_line(aes(color = Age)) + stat_summary(fun = sum, geom =
-                                                                                                            'line', aes(color="Total")) +
+               ggplot(plotData(), aes(x = Date, y = contagiousInSociety)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(fun = sum, geom =
+                                                                                                            'line', size = lineWidth, aes(color="Total")) +
                  labs(
                    title = paste("Contagious persons not isolated in",input$regionSelect),
-                   x = "Date",
-                   y = "Number",
+                   x = element_blank(),
+                   y = element_blank(),
                    color = "Agegroups"
-                 )
+                 ) + commonTheme
              })
            output$plotCareloadId <-
              renderPlot({
-               ggplot(plotData(), aes(x = Date, y = careload)) + geom_line(aes(color = Age)) + stat_summary(fun = sum, geom =
-                                                                                                            'line', aes(color="Total")) +
+               ggplot(plotData(), aes(x = Date, y = careload)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(fun = sum, geom =
+                                                                                                            'line', size = lineWidth, aes(color="Total")) +
                  labs(
-                   title = paste("Hospitalized persons in",input$regionSelect,"excluding intensive care"),
-                   x = "Date",
-                   y = "Number",
+                   title = paste("Hospitalized patients in ",input$regionSelect,", excluding intensive care", sep=""),
+                   x = element_blank(),
+                   y = element_blank(),
                    color = "Agegroups"
-                 )
+                 ) + commonTheme
              })
            output$plotContagiousTotalId <-
              renderPlot({
-               ggplot(plotData(), aes(x = Date, y = contagiousTotal)) + geom_line(aes(color = Age)) + stat_summary(fun = sum, geom =
-                                                                                                            'line', aes(color="Total")) +
+               ggplot(plotData(), aes(x = Date, y = contagiousTotal)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(fun = sum, geom =
+                                                                                                            'line', size = lineWidth, aes(color="Total")) +
                  labs(
-                   title = paste("Total number of Contagious in", input$regionSelect),
-                   x = "Date",
-                   y = "Number",
+                   title = paste("Total number of contagious in", input$regionSelect),
+                   x = element_blank(),
+                   y = element_blank(),
                    color = "Agegroups"
-                 )
+                 ) + commonTheme
              })
            
            # output$t1 <- renderPrint({
