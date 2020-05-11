@@ -76,10 +76,9 @@ shinyApp(ui <- fluidPage(#titlePanel("Title"),
                            )
                          ),
                          fluidRow(
-                           column(4, plotOutput("plotDeathsId")
+                           column(6, plotOutput("plotDeathsId")
                            ),
-                           column(4, plotOutput("plotContagiusId")),
-                           column(4, plotOutput("plotContagiousTotalId"))
+                           column(6, plotOutput("plotContagiousTotalId"))
                          )
                          ),
          
@@ -129,17 +128,6 @@ shinyApp(ui <- fluidPage(#titlePanel("Title"),
                                                                                                             'line', size = lineWidth, aes(color="Total")) +
                  labs(
                    title = paste("Patients in intensive care in", input$regionSelect),
-                   x = element_blank(),
-                   y = element_blank(),
-                   color = "Agegroups"
-                 ) + commonTheme
-             })
-           output$plotContagiusId <-
-             renderPlot({
-               ggplot(plotData(), aes(x = Date, y = contagiousInSociety)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(fun = sum, geom =
-                                                                                                            'line', size = lineWidth, aes(color="Total")) +
-                 labs(
-                   title = paste("Contagious persons not isolated in",input$regionSelect),
                    x = element_blank(),
                    y = element_blank(),
                    color = "Agegroups"
