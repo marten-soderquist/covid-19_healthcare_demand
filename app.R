@@ -60,11 +60,17 @@ dataSets = list(
 )
 
 
-shinyApp(ui <- fluidPage(#titlePanel("Title"),
+shinyApp(ui <- fluidPage(title = "COVID-19 i Sverige",
+  titlePanel("COVID-19, vårdbehov och dödlighet i Sverige"),
+  p("Här presenteras data från modellen som beskrivs i ", 
+    tags$b("COVID-19 healthcare demand and mortality in Sweden in response to non-pharmaceutical (NPIs) mitigation and suppression scenarios (Rocklöv, et al.), preprint"),
+    tags$a(href="https://www.medrxiv.org/content/10.1101/2020.03.20.20039594v3", "[Länk].")),
+  tags$hr(),
   fluidRow(
     column(
       2,
       selectInput("regionSelect", "", character(0)),
+      p("Resultat kan visas för riket, regioner/län eller enskilda kommuner."),p(tags$em("Rutan är sökbar genom att markera och skriva.")),
       
       selectInput(
         "scenarioSelect",
@@ -77,11 +83,13 @@ shinyApp(ui <- fluidPage(#titlePanel("Title"),
           "Scenario E" = 5
         )
       ),
-      p("a) inga folkhälsointerventioner (kontrafaktiskt scenario)"),
-      p("b) lägre fysisk distansering i åldrar 0-59 år, måttligt i åldrar 60+ år"),
-      p("c) måttlig fysisk distansering i åldrar 0-59 år, måttligt hög i åldrar 60+ år"),
-      p("d) måttlig fysisk distansering i åldrar 0-59 år, hög i åldrar 60+ år, samt förbättrad isolering av sjuka"),
-      p("e) samma som d), men med ännu mer förbättrad isolering av sjuka.")
+      p("A) inga folkhälsointerventioner (kontrafaktiskt scenario)"),
+      p("B) lägre fysisk distansering i åldrar 0-59 år, måttligt i åldrar 60+ år"),
+      p("C) måttlig fysisk distansering i åldrar 0-59 år, måttligt hög i åldrar 60+ år"),
+      p("D) måttlig fysisk distansering i åldrar 0-59 år, hög i åldrar 60+ år, samt förbättrad isolering av sjuka"),
+      p("E) samma som D), men med ännu mer förbättrad isolering av sjuka."),
+      p(span("En komplett beskrivning av scenario, modell och antaganden återfinns "),
+        a(href="https://www.medrxiv.org/content/10.1101/2020.03.20.20039594v3", "här."))
     ),
     column(10,
            fluidRow(
@@ -92,7 +100,8 @@ shinyApp(ui <- fluidPage(#titlePanel("Title"),
              column(6, plotOutput("plotDeathsId")),
              column(6, plotOutput("plotContagiousTotalId"))
            ))
-  )),
+  )
+  ),
   server <- function(input, output, session) {
     updateSelectInput(session,
                       inputId = "regionSelect",
