@@ -4,12 +4,20 @@ library(tidyverse)
 
 #regions = read.csv("data/region_data.csv", encoding = "UTF-8")
 regions = vroom(
-  "data/metadata/region_data.csv",
+  "data/metadata/region_data.csv",delim=',',
   col_types = list(selectedRegion = "c", MunicipalityCode = "c")
 )
 selectableRegions = unique(regions$selectedRegion)
-ages = vroom::vroom("data/metadata/agegroups.csv",
+ages = vroom::vroom("data/metadata/agegroups.csv",delim=',',
                     col_types =  list(AgeGroup = "c", Age = "c"))
+municipalityMetadata <- vroom::vroom("data/metadata/municipalities.csv",delim = ',',
+                                     col_types = list(Index = "_",
+                                                      MunicipalityCode = "c",
+                                                      Name = "c",
+                                                      Lat= "_",
+                                                      Long = "_",
+                                                      GroupCode = "_",
+                                                      CountyCode = "_"))
 
 ### Vroom can read several files and append these into a single table. So,
 ### create one file per municipality to reduce memory use or per parameter
