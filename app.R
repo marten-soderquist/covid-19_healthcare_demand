@@ -3,12 +3,22 @@ library(vroom)
 library(tidyverse)
 source("getSelectionList.R")
 
+## Import metadata
+
+regions = vroom::vroom(
+  "data/metadata/region_data.csv",
+  delim = ',',
+  col_types = list(selectedRegion = "c", MunicipalityCode = "c", Section = "_")
+)
+
 selectableRegions = getSelectionList()
+
 ages = vroom::vroom(
   "data/metadata/agegroups.csv",
   delim = ',',
   col_types =  list(AgeGroup = "c", Age = "c")
 )
+
 municipalityMetadata <-
   vroom::vroom(
     "data/metadata/municipalities.csv",
@@ -26,6 +36,8 @@ municipalityMetadata <-
 
 textSize = 18
 lineWidth = 1
+
+## Import data ##
 
 columnTypes = list(
   MunicipalityCode = "c",
@@ -50,6 +62,7 @@ dataSets = list(
   vroom::vroom("data/R_5.csv", col_types = columnTypes)
 )
 
+## App 33
 
 shinyApp(
   ui <- fluidPage(
@@ -110,14 +123,18 @@ shinyApp(
     )
   ),
   server <- function(input, output, session) {
+    
+    ## Reactive when changing region or scenario
+    
     plotData <- reactive({
+      
       regionSelection <-
         regions %>% dplyr::filter(selectedRegion == input$regionSelect)
+      
       selectedDataset <-
-        dplyr::inner_join(regionSelection, dataSets[[as.integer(input$scenarioSelect)]]) %>% dplyr::inner_join(ages)
-      
-      
-      selectedDataset %>% dplyr::group_by(selectedRegion, Age, Date) %>%
+        dplyr::inner_join(regionSelection, dataSets[[as.integer(input$scenarioSelect)]]) %>% 
+        dplyr::inner_join(ages) %>%
+        dplyr::group_by(selectedRegion, Age, Date) %>%
         dplyr::summarize(
           deaths = sum(M),
           intensiveCare = sum(IV),
@@ -127,16 +144,18 @@ shinyApp(
         )
     })
     
+    ## Plot functions ##
+    
     commonTheme = theme(text = element_text(size = textSize),
                         legend.position = 'bottom')
     
     output$plotDeathsId <- renderPlot({
-      ggplot(plotData(), aes(x = Date, y = deaths)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
-        fun = sum,
-        geom =
-          'line',
-        size = lineWidth,
-        aes(color = "Total")
+      ggplot(plotData(), aes(x = Date, y = deaths)) + geom_line(aes(color = Age), size = lineWidth)  + stat_summary(
+       fun = sum,
+       geom =
+         'line',
+       size = lineWidth,
+       aes(color = "Total")
       ) +
         labs(
           title = paste("Dödsfall,", input$regionSelect),
@@ -162,6 +181,7 @@ shinyApp(
             color = "Åldersgrupp"
           ) + commonTheme
       })
+    
     output$plotCareloadId <-
       renderPlot({
         ggplot(plotData(), aes(x = Date, y = careload)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
@@ -178,6 +198,7 @@ shinyApp(
             color = "Åldersgrupp"
           ) + commonTheme
       })
+    
     output$plotContagiousTotalId <-
       renderPlot({
         ggplot(plotData(), aes(x = Date, y = contagiousTotal)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
