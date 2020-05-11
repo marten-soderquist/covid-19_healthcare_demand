@@ -62,9 +62,9 @@ dataSets = list(
 
 shinyApp(ui <- fluidPage(title = "COVID-19 i Sverige",
   titlePanel("COVID-19, vårdbehov och dödlighet i Sverige"),
-  p("Här presenteras data från modellen som beskrivs i ", 
-    tags$b("COVID-19 healthcare demand and mortality in Sweden in response to non-pharmaceutical (NPIs) mitigation and suppression scenarios (Rocklöv, et al.), preprint"),
-    tags$a(href="https://www.medrxiv.org/content/10.1101/2020.03.20.20039594v3", "[Länk].")),
+  # p("Här presenteras data från modellen som beskrivs i ", 
+  #   tags$b("COVID-19 healthcare demand and mortality in Sweden in response to non-pharmaceutical (NPIs) mitigation and suppression scenarios (Rocklöv, et al.), preprint"),
+  #   tags$a(href="https://www.medrxiv.org/content/10.1101/2020.03.20.20039594v3", "[Länk].")),
   tags$hr(),
   fluidRow(
     column(
