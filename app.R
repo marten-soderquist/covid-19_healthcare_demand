@@ -1,14 +1,16 @@
 library(shiny)
 library(vroom)
 library(tidyverse)
+source("getSelectionList.R")
 
 #regions = read.csv("data/region_data.csv", encoding = "UTF-8")
-regions = vroom(
-  "data/metadata/region_data.csv",
-  delim = ',',
-  col_types = list(selectedRegion = "c", MunicipalityCode = "c")
-)
-selectableRegions = unique(regions$selectedRegion)
+# regions = vroom(
+#   "data/metadata/region_data.csv",
+#   delim = ',',
+#   col_types = list(selectedRegion = "c", MunicipalityCode = "c")
+# )
+# selectableRegions = unique(regions$selectedRegion)
+selectableRegions = getSelectionList()
 ages = vroom::vroom(
   "data/metadata/agegroups.csv",
   delim = ',',
@@ -69,7 +71,7 @@ shinyApp(ui <- fluidPage(title = "COVID-19 i Sverige",
   fluidRow(
     column(
       2,
-      selectInput("regionSelect", "", character(0)),
+      selectInput("regionSelect", "", choices = selectableRegions),
       p("Resultat kan visas för riket, regioner/län eller enskilda kommuner."),p(tags$em("Rutan är sökbar genom att markera och skriva.")),
       
       selectInput(
@@ -103,10 +105,10 @@ shinyApp(ui <- fluidPage(title = "COVID-19 i Sverige",
   )
   ),
   server <- function(input, output, session) {
-    updateSelectInput(session,
-                      inputId = "regionSelect",
-                      choices = selectableRegions,
-                      selected = NULL)
+    # updateSelectInput(session,
+    #                   inputId = "regionSelect",
+    #                   choices = getSelectionList(),
+    #                   selected = NULL)
     
     plotData <- reactive({
       regionSelection <-
