@@ -175,7 +175,7 @@ shinyApp(
           aes(color = "Total")
         ) +
           labs(
-            title = paste("Intensivvårdspatiener,", input$regionSelect),
+            title = paste("Intensivvårdade patienter,", input$regionSelect),
             x = element_blank(),
             y = element_blank(),
             color = "Åldersgrupp"
