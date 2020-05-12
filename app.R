@@ -113,12 +113,12 @@ shinyApp(
       ),
       column(10,
              fluidRow(
-               column(6, plotOutput("plotIVAId")),
-               column(6, plotOutput("plotCareloadId"))
+               column(6, plotOutput("plotIVAId"),p("Antal patienter som vid varje tidpunkt vårdas på intensivvårdsavdelning (IVA).")),
+               column(6, plotOutput("plotCareloadId"), p("Antal patienter som vid varje tidpunkt vårdas på vanlig sjukhusavdelning."))
              ),
              fluidRow(
-               column(6, plotOutput("plotDeathsId")),
-               column(6, plotOutput("plotContagiousTotalId"))
+               column(6, plotOutput("plotDeathsId"),p("Totalt antal dödsfall till och med tidpunkt (notera; underliggande modell predikterar inträffande av dödsfall runt 10 dagar för tidigt)")),
+               column(6, plotOutput("plotContagiousTotalId"),p("Antal personer som vid varje tidpunkt är smittsamma i samhället."))
              ))
     )
   ),
