@@ -146,11 +146,13 @@ shinyApp(
     
     ## Plot functions ##
     
+    dateAxis = scale_x_date(date_breaks = "1 month", date_labels = "%b")
+    yAxis = scale_y_continuous(labels=function(n){format(n, scientific = FALSE)})
     commonTheme = theme(text = element_text(size = textSize),
                         legend.position = 'bottom')
     
     output$plotDeathsId <- renderPlot({
-      ggplot(plotData(), aes(x = Date, y = deaths)) + geom_line(aes(color = Age), size = lineWidth)  + stat_summary(
+      ggplot(plotData(), aes(x = Date, y = deaths)) + dateAxis + yAxis + geom_line(aes(color = Age), size = lineWidth)  + stat_summary(
        fun = sum,
        geom =
          'line',
@@ -167,7 +169,7 @@ shinyApp(
     
     output$plotIVAId <-
       renderPlot({
-        ggplot(plotData(), aes(x = Date, y = intensiveCare)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
+        ggplot(plotData(), aes(x = Date, y = intensiveCare)) + dateAxis + yAxis + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
           fun = sum,
           geom =
             'line',
@@ -184,7 +186,7 @@ shinyApp(
     
     output$plotCareloadId <-
       renderPlot({
-        ggplot(plotData(), aes(x = Date, y = careload)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
+        ggplot(plotData(), aes(x = Date, y = careload)) + dateAxis + yAxis + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
           fun = sum,
           geom =
             'line',
@@ -201,7 +203,7 @@ shinyApp(
     
     output$plotContagiousTotalId <-
       renderPlot({
-        ggplot(plotData(), aes(x = Date, y = contagiousTotal)) + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
+        ggplot(plotData(), aes(x = Date, y = contagiousTotal)) + dateAxis + yAxis + geom_line(aes(color = Age), size = lineWidth) + stat_summary(
           fun = sum,
           geom =
             'line',
