@@ -1,6 +1,7 @@
 library(shiny)
 library(vroom)
 library(tidyverse)
+library(DT)
 source("getSelectionList.R")
 
 ## Import metadata
@@ -112,7 +113,7 @@ shinyApp(
           a(href = "https://www.medrxiv.org/content/10.1101/2020.03.20.20039594v3", "här.")
         )
       ),
-      column(10,
+      column(6,
              fluidRow(
                column(6, plotOutput("plotIVAId"),p("Antal patienter som vid varje tidpunkt vårdas på intensivvårdsavdelning (IVA).")),
                column(6, plotOutput("plotCareloadId"), p("Antal patienter som vid varje tidpunkt vårdas på vanlig sjukhusavdelning."))
@@ -120,9 +121,11 @@ shinyApp(
              fluidRow(
                column(6, plotOutput("plotDeathsId"),p("Totalt antal dödsfall till och med tidpunkt (notera; underliggande modell predikterar inträffande av dödsfall några dagar för tidigt)")),
                column(6, plotOutput("plotContagiousTotalId"),p("Antal personer som vid varje tidpunkt är smittsamma i samhället."))
-             ),
+             )),
+      column(4,
              fluidRow(
-               column(12, tableOutput("tableLoadId"))
+               #column(12, tableOutput("tableLoadId"))
+               column(12, DTOutput("tableLoadId"))
              ))
     )
   ),
@@ -138,14 +141,27 @@ shinyApp(
         dplyr::inner_join(regionSelection, dataSets[[as.integer(input$scenarioSelect)]]) %>% 
         dplyr::inner_join(municipalityMetadata) %>%
         dplyr::group_by(Name) %>% 
-        dplyr::summarise(MaxIVA = ceiling(max(IV)),
-                         TotalDaysCare = ceiling(sum(V_VR)),
+        dplyr::summarise(TotalDaysCare = ceiling(sum(V_VR)),
+                         sumTDays = ceiling(sum(T)),
                          maxT = ceiling(max(T)),
-                         sumTDays = ceiling(sum(T))
+                         MaxIVA = ceiling(max(IV))
                          )
     })
-    
-    output$tableLoadId <- renderTable(careLoad())
+
+    output$tableLoadId <- renderDT(careLoad(),
+                                   options = list(
+                                     columns = list(
+                                       list(title = 'Kommun'),
+                                       list(title = 'Totalt antal vårddagar kommunal och sjukhusvård'),
+                                       list(title = 'Antal vårddagar hos kommunen i livets slutskede'),
+                                       list(title = 'Antal personer vid maxbelastning med vård i livets slutskede i kommun'),
+                                       list(title = 'Maxantal samtidigt på sjukhus-IVA från kommunen')
+                                       ),
+                                     pageLength = 15
+                                     
+                                     ),selection = c('none'),
+                                     rownames = FALSE
+                                   )
     
     plotData <- reactive({
       
