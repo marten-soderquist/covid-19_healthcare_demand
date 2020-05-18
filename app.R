@@ -52,14 +52,15 @@ columnTypes = list(
   VR = "d",
   I_J = "d",
   V_VR = "d",
-  I_J_RI = "d"
+  I_J_RI = "d",
+  T = "d"
 )
 dataSets = list(
-  vroom::vroom("data/R_1.csv", col_types = columnTypes),
-  vroom::vroom("data/R_2.csv", col_types = columnTypes),
-  vroom::vroom("data/R_3.csv", col_types = columnTypes),
-  vroom::vroom("data/R_4.csv", col_types = columnTypes),
-  vroom::vroom("data/R_5.csv", col_types = columnTypes)
+  vroom::vroom("data/RT_1.csv", col_types = columnTypes),
+  vroom::vroom("data/RT_2.csv", col_types = columnTypes),
+  vroom::vroom("data/RT_3.csv", col_types = columnTypes),
+  vroom::vroom("data/RT_4.csv", col_types = columnTypes),
+  vroom::vroom("data/RT_5.csv", col_types = columnTypes)
 )
 
 ## App 33
@@ -119,12 +120,32 @@ shinyApp(
              fluidRow(
                column(6, plotOutput("plotDeathsId"),p("Totalt antal dödsfall till och med tidpunkt (notera; underliggande modell predikterar inträffande av dödsfall några dagar för tidigt)")),
                column(6, plotOutput("plotContagiousTotalId"),p("Antal personer som vid varje tidpunkt är smittsamma i samhället."))
+             ),
+             fluidRow(
+               column(12, tableOutput("tableLoadId"))
              ))
     )
   ),
   server <- function(input, output, session) {
     
     ## Reactive when changing region or scenario
+    
+    careLoad <- reactive({
+      regionSelection <-
+        regions %>% dplyr::filter(selectedRegion == input$regionSelect)
+      
+      maxIva <-
+        dplyr::inner_join(regionSelection, dataSets[[as.integer(input$scenarioSelect)]]) %>% 
+        dplyr::inner_join(municipalityMetadata) %>%
+        dplyr::group_by(Name) %>% 
+        dplyr::summarise(MaxIVA = ceiling(max(IV)),
+                         TotalDaysCare = ceiling(sum(V_VR)),
+                         maxT = ceiling(max(T)),
+                         sumTDays = ceiling(sum(T))
+                         )
+    })
+    
+    output$tableLoadId <- renderTable(careLoad())
     
     plotData <- reactive({
       
